@@ -101,7 +101,7 @@ const addUploadFeature = requestHandler => {
 
 			/* ESTO SE EJECUTA JUSTO AL PRESIONAR EL BOTÓN SAVE EN EL MODO DE EDICIÓN, LA IDEA ES BUSCAR LAS IMÁGENES
 			QUE FUERON AGREGADAS. RECUERDEN QUE EN GET_ONE (ARRIBA) NOSOTROS CREAMOS UNA PROPIEDAD pictures QUE ES UN ARRAY
-			DE OBJECTOS [{id: xxx, url: xxx }] CON EL FIN DE PODER VER TODAS LAS IMÁGENES EN MODO EDICIÓN. ENTONCES, EL COMPONENTE ImageInput QUE ESTÁ EN TODOS LOS EDIT, CUANDO
+			DE OBJECTOS [{id: xxx, url: xxx }] CON EL FIN DE PODER VER TODAS LAS IMÁGENES EN MODO EDICIÓN. ENTONCES, EL COMPONENTE ImageInput QUE ESTÁ EN TODOS LOS EDIT Y CREATE, CUANDO
 			SE AGREGAN ARCHIVOS DE IMAGEN NUEVOS, AÑADE UNA PROPIEDAD rawFile A CADA OBJETO DEL ARRAY ANTERIOR, OSEA
 			QUE pictures AHORA SERÁ [{id: xxx, url: xxx, rawFile: _File_ }]. rawFile SERÁ UN File CUANDO SEA UN ARCHIVO NUEVO,
 			Y SERÁ Undefined CUANDO SE TRATE DE UN ARCHIVO EXISTENTE. ENTONCES LO QUE HACEMOS ES IDENTIFICAR ESOS ARCHIVOS
@@ -250,6 +250,176 @@ const addUploadFeature = requestHandler => {
 
 		}
 		
+		if (type === 'DELETE' && resource === 'categories') { // ******* OPERACIONES DELETE con categories 
+
+			// PRIMERO QUE NADA HAY QUE ELIMINAR EN EL SERVIDOR TODAS LAS IMÁGENES DE LA CATEGORÍA
+
+			const { id: categoryId } = params;
+			
+			options = {
+				method: 'DELETE',
+				credentials: 'include',
+				mode: 'cors'					
+			};
+			
+			url = `${apiURL}categories/${categoryId}/images/all`;
+
+			return fetch(url, options).then(res => res.json()).then(json => {
+
+				// AHORA SI PODEMOS ELIMINAR LA CATEGORÍA
+
+				options = {
+					method: 'DELETE',
+					credentials: 'include',
+					mode: 'cors'					
+				};
+				
+				url = `${apiURL}categories/${categoryId}`;
+
+				return fetch(url, options).then(res => res.json());
+
+
+			}).then(json => {
+
+				return Promise.resolve({
+					data: {
+						id: json.data.category._id,
+						...json.data.category
+					}
+				});
+
+			});
+
+		}
+
+		if (type === 'DELETE_MANY' && resource === 'categories') { // ******* OPERACIONES DELETE_MANY con categories
+
+			const { ids } = params;
+
+			/* PRIMERO QUE NADA, USANDO LOS IDS, MANDAMOS A ELIMINAR TODAS LAS IMÁGES DE LAS CATEGORÍAS */
+
+			const fetchArray = [];
+
+			options = {
+				method: 'DELETE',
+				credentials: 'include',
+				mode: 'cors'					
+			};
+			
+
+			for (let i = 0; i < ids.length; i++ ) {
+
+				fetchArray.push(fetch(`${apiURL}categories/${ids[i]}/images/all`, options));
+
+			}
+
+			return Promise.all(fetchArray).then(results => {
+
+				const fetchArray2 = [];
+
+				for (let j = 0; j < ids.length; j++ ) {
+
+					fetchArray2.push(fetch(`${apiURL}categories/${ids[j]}`, options));
+	
+				}
+
+				return Promise.all(fetchArray2);
+
+			}).then(results => {
+
+				return Promise.resolve({
+					data: ids
+				});
+
+			});
+
+
+		}
+
+		if (type === 'CREATE' && resource === 'categories') { // ****** OPERACIONES CREATE con categories
+
+			/* ESTO SE EJECUTA JUSTO AL PRESIONAR EL BOTÓN SAVE EN EL MODO DE EDICIÓN, LA IDEA ES BUSCAR LAS IMÁGENES
+			QUE FUERON AGREGADAS. RECUERDEN QUE EN GET_ONE (ARRIBA) NOSOTROS CREAMOS UNA PROPIEDAD pictures QUE ES UN ARRAY
+			DE OBJECTOS [{id: xxx, url: xxx }] CON EL FIN DE PODER VER TODAS LAS IMÁGENES EN MODO EDICIÓN. ENTONCES, EL COMPONENTE ImageInput QUE ESTÁ EN TODOS LOS EDIT Y CREATE, CUANDO	SE AGREGAN ARCHIVOS DE IMAGEN NUEVOS, AÑADE UNA PROPIEDAD rawFile A CADA OBJETO DEL ARRAY ANTERIOR, OSEA QUE pictures AHORA SERÁ [{id: xxx, url: xxx, rawFile: _File_ }]. rawFile SERÁ UN File CUANDO SEA UN ARCHIVO NUEVO, Y SERÁ Undefined CUANDO SE TRATE DE UN ARCHIVO EXISTENTE (EN ESTE CASO COMO ESTAMOS CREANDO UN REGISTRO, SOLO HABRÁN ARCHIVOS NUEVOS). ENTONCES LO QUE HACEMOS ES IDENTIFICAR ESOS ARCHIVOS NUEVOS PARA ALMACENARLOS EN EL SERVIDOR, ASOCIADOS CON EL categoryId  */
+
+			// notice that following condition can be true only when `<ImageInput source="pictures" />` component has parameter `multiple={true}`
+			// if parameter `multiple` is false, then data.pictures is not an array, but single object
+
+			if (params.data.pictures && params.data.pictures.length) {
+
+				// only freshly dropped pictures are instance of File
+				
+				const newPictures = params.data.pictures.filter(p => p.rawFile instanceof File);
+
+				// ACTUALIZAMOS PRIMERO LOS DATOS DE LA NUEVA CATEGORÍA
+
+				const { code, name, description } = params.data;
+
+				const data = {
+
+					filter: {
+						code,
+						name,
+						description
+					}
+				};
+
+				options = {
+					method: 'POST',
+					credentials: 'include',
+					mode: 'cors',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify(data)					
+				};
+									
+				url = `${apiURL}categories/`;
+
+				return fetch(url, options).then(res => res.json()).then(json => {
+
+					const { category: categoryObj } = json.data;
+
+					const { _id: categoryId } = categoryObj;
+
+					// AHORA VAMOS A CREAR UN FORM DATA PARA ENVIAR TODAS LAS IMÁGENES NUEVAS AL SERVIDOR
+					const formData = new FormData();
+						
+					for (let i = 0; i < newPictures.length; i++) {
+						formData.append('images', newPictures[i].rawFile); // SOLO ENVIAMOS EL rawFile
+					}
+
+					options = {
+						method: 'POST',
+						credentials: 'include',
+						mode: 'cors',
+						body: formData					
+					};
+
+					url = `${apiURL}categories/${categoryId}/images/all`;
+						
+					return fetch(url, options).then(res => res.json());
+
+				}).then(json => {
+
+					const categoryObj = json.data.category;
+						
+					return Promise.resolve({
+						data: {
+							id: categoryObj._id,
+							...categoryObj
+						}
+
+					});
+
+
+				});
+
+
+
+			}
+
+		}
 
 		// for other request types and resources, fall back to the default request handler
 		return requestHandler(type, resource, params);

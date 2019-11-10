@@ -246,7 +246,7 @@ const convertDataRequestToHTTP = (type, resource, params) => {
 	}
 	case DELETE:
 	{
-
+	
 		break;
 	}
 	case DELETE_MANY:

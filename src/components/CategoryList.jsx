@@ -4,7 +4,6 @@ import { List, Datagrid, TextField, ReferenceManyField, SingleFieldList, ChipFie
 const CategoryList = props => (
 	<List title="Departments" {...props}>
 		<Datagrid rowClick="show">
-			<TextField source="id" />
 			<TextField source="code" />
 			<TextField source="name" />
 			<ReferenceManyField label="Sub-Departments" reference="subcategories" target="category" sort={{ field: 'name', order: 'ASC' }}>
