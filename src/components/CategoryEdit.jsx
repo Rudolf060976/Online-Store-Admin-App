@@ -3,7 +3,7 @@ import { Edit, SimpleForm, LongTextInput, TextInput, ImageField, ImageInput } fr
 
 const CategoryTitle = ({ record }) => {
 
-	return (<span>Category: { record ? `${record.name} - Edit Mode` : '' }</span>);
+	return (<span>Department: { record ? `${record.name} - Edit Mode` : '' }</span>);
 
 };
 

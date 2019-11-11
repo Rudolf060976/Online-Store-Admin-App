@@ -3,7 +3,7 @@ import { Show, SimpleShowLayout, TextField, ReferenceArrayField, SingleFieldList
 
 const CategoryTitle = ({ record }) => {
 
-	return (<span>Category: { record ? `${record.name}` : '' }</span>);
+	return (<span>Department: { record ? `${record.name}` : '' }</span>);
 
 };
 

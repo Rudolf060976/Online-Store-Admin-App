@@ -47,11 +47,11 @@ const convertDataRequestToHTTP = (type, resource, params) => {
 
 		const qs = new URLSearchParams(query).toString();
 
-		if (resource === 'categories') {
+		if (resource === 'departments') {
 
 			url = `${apiURL}categories/admin?${qs}`;
 
-		} else if (resource === 'subcategories') {
+		} else if (resource === 'subdepartments') {
 
 			url = `${apiURL}categories/sub/admin?${qs}`;
 
@@ -66,17 +66,17 @@ const convertDataRequestToHTTP = (type, resource, params) => {
 	{
 		const { id } = params;
 
-		// if (resource === 'categories') {
+		// if (resource === 'departments') {
 
 		// url = `${apiURL}categories/${id}`;
 
 		// } 
 		
-		if (resource === 'subcategories') {
+		// if (resource === 'subdepartments') {
 
-			url = `${apiURL}categories/sub/${id}`;
+		// url = `${apiURL}categories/sub/${id}`;
 
-		} 
+		// } 
 		
 		if (resource === 'items') {
 
@@ -95,13 +95,13 @@ const convertDataRequestToHTTP = (type, resource, params) => {
 
 		const qs = new URLSearchParams(query).toString();
 
-		if (resource === 'categories') {
+		if (resource === 'departments') {
 
 			url = `${apiURL}categories/many?${qs}`;
 
 		} 
 		
-		if (resource === 'subcategories') {
+		if (resource === 'subdepartments') {
 
 			url = `${apiURL}categories/sub/many?${qs}`;
 
@@ -142,13 +142,13 @@ const convertDataRequestToHTTP = (type, resource, params) => {
 
 		const qs = new URLSearchParams(query).toString();
 
-		if (resource === 'categories') {
+		if (resource === 'departments') {
 
 			url = `${apiURL}categories/admin?${qs}`;
 
 		} 
 		
-		if (resource === 'subcategories') {
+		if (resource === 'subdepartments') {
 
 			url = `${apiURL}categories/sub/admin?${qs}`;
 
@@ -168,7 +168,7 @@ const convertDataRequestToHTTP = (type, resource, params) => {
 
 		options.method = 'POST';
 
-		if (resource === 'categories') {
+		/* if (resource === 'departments') {
 
 			url = `${apiURL}categories/`;
 	
@@ -179,9 +179,9 @@ const convertDataRequestToHTTP = (type, resource, params) => {
 				name,
 				description
 			});
-		} 
+		} */
 		
-		if (resource === 'subcategories') {
+		/* if (resource === 'subdepartments') {
 
 			const {
 				categoryId,
@@ -198,7 +198,7 @@ const convertDataRequestToHTTP = (type, resource, params) => {
 				description
 			});
 		
-		} 
+		} */
 		
 		if (resource === 'items') {
 
@@ -219,17 +219,17 @@ const convertDataRequestToHTTP = (type, resource, params) => {
 			filter: JSON.stringify(params.data)
 		};
 		
-		/* if (resource === 'categories') {
+		/* if (resource === 'departments') {
 
 			url = `${apiURL}categories/${id}`;
 		
 		} */
 		
-		if (resource === 'subcategories') {
+		/* if (resource === 'subdepartments') {
 
 			url = `${apiURL}sub/${id}`;
 		
-		} 
+		} */
 		
 		if (resource === 'items') {
 
@@ -282,7 +282,7 @@ const convertHTTPResponse = (response, type, resource, params) => {
 	}
 	case GET_ONE:
 	{
-		/* if (resource === 'categories') {
+		/* if (resource === 'departments') {
 
 			return {
 				data: {
@@ -293,7 +293,7 @@ const convertHTTPResponse = (response, type, resource, params) => {
 
 		}  */
 		
-		if (resource === 'subcategories') {
+		/* if (resource === 'subdepartments') {
 
 			return {
 				data: {
@@ -302,7 +302,7 @@ const convertHTTPResponse = (response, type, resource, params) => {
 				}
 			};
 
-		} 
+		} */
 		
 		if (resource === 'items') {
 
@@ -320,7 +320,7 @@ const convertHTTPResponse = (response, type, resource, params) => {
 	case GET_MANY:
 	{
 		
-		if (resource === 'items' || resource === 'categories' || resource === 'subcategories') {
+		if (resource === 'items' || resource === 'departments' || resource === 'subdepartments') {
 
 			const { results } = json.data;
 
@@ -369,7 +369,7 @@ const convertHTTPResponse = (response, type, resource, params) => {
 	}
 	case UPDATE:
 	{
-		/* if (resource === 'categories') {
+		/* if (resource === 'departments') {
 
 			return {
 				data: {
@@ -380,7 +380,7 @@ const convertHTTPResponse = (response, type, resource, params) => {
 
 		} */
 
-		if (resource === 'subcategories') {
+		/* if (resource === 'subdepartments') {
 
 			return {
 				data: {
@@ -389,7 +389,7 @@ const convertHTTPResponse = (response, type, resource, params) => {
 				}
 			};
 
-		}
+		} */
 
 		if (resource === 'items') {
 

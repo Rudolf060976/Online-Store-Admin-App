@@ -12,7 +12,7 @@ const addUploadFeature = requestHandler => {
 
 	return (type, resource, params) => {
 
-		if (type === 'GET_ONE' && resource === 'categories') { // SOLO PARA OPERACIONES GET_ONE CON categories
+		if (type === 'GET_ONE' && resource === 'departments') { // SOLO PARA OPERACIONES GET_ONE CON categories
 
 			/* LA IDEA ES: CUANDO SE HAGA CLICK EN EL BOTÓN EDITAR CATEGORIA, react-admin HACE UN GET_ONE PARA PEDIR
 			EL DOCUMENTO AL SERVIDOR (RECORD), PERO EN EL DOCUMENTO VIENE LA PROPIEDAD images QUE ES SOLO UN ARRAY DE ids
@@ -97,7 +97,7 @@ const addUploadFeature = requestHandler => {
 
 		}
 
-		if (type === 'UPDATE' && resource === 'categories') { // *******OPERACIONES UPDATE  con categories
+		if (type === 'UPDATE' && resource === 'departments') { // *******OPERACIONES UPDATE  con categories
 
 			/* ESTO SE EJECUTA JUSTO AL PRESIONAR EL BOTÓN SAVE EN EL MODO DE EDICIÓN, LA IDEA ES BUSCAR LAS IMÁGENES
 			QUE FUERON AGREGADAS. RECUERDEN QUE EN GET_ONE (ARRIBA) NOSOTROS CREAMOS UNA PROPIEDAD pictures QUE ES UN ARRAY
@@ -151,26 +151,37 @@ const addUploadFeature = requestHandler => {
 					});
 
 					
-					// AHORA ESTOS ID IMAGES HAY QUE MANDARLOS A ELIMINAR AL SERVIDOR
+					if (deletedIdArray.length > 0) {
 
-					options = {
-						method: 'DELETE',
-						credentials: 'include',
-						mode: 'cors'					
-					};
-				
-					const fetchArray = [];
-					
-					for (let j = 0; j < deletedIdArray.length; j++) {
+						// AHORA ESTOS ID IMAGES HAY QUE MANDARLOS A ELIMINAR AL SERVIDOR
 
-						fetchArray.push(fetch(`${apiURL}categories/${categoryId}/images/one/${deletedIdArray[j]}`, options));
+						options = {
+							method: 'DELETE',
+							credentials: 'include',
+							mode: 'cors'					
+						};
+	
+						query = {
+	
+							filter: JSON.stringify({
+								ids: deletedIdArray
+							})
+	
+						};
+	
+						qs = new URLSearchParams(query).toString();
+	
+	
+						url = `${apiURL}categories/${categoryId}/images/many?${qs}`;
+	
+						return fetch(url, options).then(resp => resp.json());	
+
 
 					}
-					
-					return Promise.all(fetchArray);
-						
-						
-				}).then(res => {
+
+					return Promise.resolve();
+
+				}).then(() => {
 
 					// UNA VEZ QUE YA ESTÁN ELIMINADAS LAS IMÁGENES, AHORA NOS TOCA ACTUALIZAR LOS DATOS MODIFICADOS EN EL SERVIDOR
 
@@ -197,39 +208,36 @@ const addUploadFeature = requestHandler => {
 										
 					url = `${apiURL}categories/${categoryId}`;
 					
-					return fetch(url, options);
-
+					return fetch(url, options).then(resp => resp.json());
+			
 				})
-					.then(res => {
-
-						return res.json();
-				
-					})
 					.then(json => {
-										
-						// AHORA VAMOS A CREAR UN FORM DATA PARA ENVIAR TODAS LAS IMÁGENES NUEVAS AL SERVIDOR
-						const formData = new FormData();
+							
+						if (newPictures.length > 0) {
+
+							// AHORA VAMOS A CREAR UN FORM DATA PARA ENVIAR TODAS LAS IMÁGENES NUEVAS AL SERVIDOR
+							const formData = new FormData();
 						
-						for (let i = 0; i < newPictures.length; i++) {
-							formData.append('images', newPictures[i].rawFile); // SOLO ENVIAMOS EL rawFile
+							for (let i = 0; i < newPictures.length; i++) {
+								formData.append('images', newPictures[i].rawFile); // SOLO ENVIAMOS EL rawFile
+							}
+	
+							options = {
+								method: 'POST',
+								credentials: 'include',
+								mode: 'cors',
+								body: formData					
+							};
+		
+							url = `${apiURL}categories/${categoryId}/images/all`;
+							
+							return fetch(url, options).then(res => res.json());
+		
+
 						}
 
-						options = {
-							method: 'POST',
-							credentials: 'include',
-							mode: 'cors',
-							body: formData					
-						};
-	
-						url = `${apiURL}categories/${categoryId}/images/all`;
-						
-						return fetch(url, options);
-
-					})
-					.then(res => {
-
-						return res.json();
-
+						return Promise.resolve(json);					
+				
 					})
 					.then(json => {
 
@@ -250,7 +258,7 @@ const addUploadFeature = requestHandler => {
 
 		}
 		
-		if (type === 'DELETE' && resource === 'categories') { // ******* OPERACIONES DELETE con categories 
+		if (type === 'DELETE' && resource === 'departments') { // ******* OPERACIONES DELETE con categories 
 
 			// PRIMERO QUE NADA HAY QUE ELIMINAR EN EL SERVIDOR TODAS LAS IMÁGENES DE LA CATEGORÍA
 
@@ -292,7 +300,7 @@ const addUploadFeature = requestHandler => {
 
 		}
 
-		if (type === 'DELETE_MANY' && resource === 'categories') { // ******* OPERACIONES DELETE_MANY con categories
+		if (type === 'DELETE_MANY' && resource === 'departments') { // ******* OPERACIONES DELETE_MANY con categories
 
 			const { ids } = params;
 
@@ -336,7 +344,7 @@ const addUploadFeature = requestHandler => {
 
 		}
 
-		if (type === 'CREATE' && resource === 'categories') { // ****** OPERACIONES CREATE con categories
+		if (type === 'CREATE' && resource === 'departments') { // ****** OPERACIONES CREATE con categories
 
 			/* ESTO SE EJECUTA JUSTO AL PRESIONAR EL BOTÓN SAVE EN EL MODO DE EDICIÓN, LA IDEA ES BUSCAR LAS IMÁGENES
 			QUE FUERON AGREGADAS. RECUERDEN QUE EN GET_ONE (ARRIBA) NOSOTROS CREAMOS UNA PROPIEDAD pictures QUE ES UN ARRAY
@@ -420,6 +428,231 @@ const addUploadFeature = requestHandler => {
 			}
 
 		}
+
+		if (type === 'GET_ONE' && resource === 'subdepartments') {
+
+			let subcategoryObj = {};
+
+			const { id } = params;
+
+			url = `${apiURL}categories/sub/${id}`;
+
+			options = {
+				method: 'GET',
+				credentials: 'include',
+				mode: 'cors'									
+			};
+
+			return fetch(url, options).then(res => res.json()).then(res => {
+				
+				subcategoryObj = res.data.subcategory; // YA TENEMOS EL categoryObj, AHORA VAMOS A SOLICITAR LAS IMÁGENES AL SERVIDOR.
+
+				const imagesIdArray = res.data.subcategory.images; // ESTO ES EL ARRAY CON LOS ID DE LAS IMÁGENES
+			
+				options = {
+					method: 'GET',
+					credentials: 'include',
+					mode: 'cors'					
+				};
+
+				query = {
+					filter: JSON.stringify({ ids: imagesIdArray })
+				};
+
+				qs = new URLSearchParams(query).toString();
+
+				url = `${apiURL}categories/images/many?${qs}`;
+
+				return fetch(url, options).then(response => response.json()); // SOLICITAMOS LAS IMÁGENES AL SERVIDOR
+			
+			}).then(res => {
+
+				const imagesArray = res.data; // VIENEN LAS IMÁGENES COMO UN ARRAY [{ _id: xxx, image: _Buffer_ }]
+
+				const outputArray = imagesArray.map(item => { // LO CONVERTIMOR A UN ARRAY ASI [{id: xxxx, url: xxxx},...]
+
+					return {
+						id: item._id,
+						url: URL.createObjectURL(new Blob([Buffer.from(item.image)]))
+					};
+
+				});
+
+				// AHORA AÑADIMOS ESTE ARRAY CON LAS IMÁGENES AL OBJETO categoryObject
+
+				subcategoryObj = {
+					...subcategoryObj,
+					pictures: outputArray
+				};
+
+				// RECUERDEN QUE LA FUNCIÓN DEBE DEVOLVER UNA PROMESA CON LA DATA EN EL FORMATO QUE ACEPTA REACT ADMIN
+				/* QUÉ ESTAMOS HACIENDO??? DARLE A REACT ADMIN UN OBJETO data QUE TIENE TODA LA DATA DE LA CATEGORÍA,
+				CON UNA PROPIEDAD ADICIONAL pictures LA CUAL CONTIENE UN ARRAY DE LA FORMA [{id: xxx, url: xxx }] EL CUAL
+				ME PERMITE VISUALIZAR TODAS LAS IMÁGENES EXISTENTES EN EL MODO DE EDICIÓN, Y PODERLAS ELIMINAR SI QUIERO */
+
+				return Promise.resolve({ 
+					data: {
+						id: subcategoryObj._id,
+						...subcategoryObj
+					}
+				});
+
+
+			});
+
+		}
+		
+		if (type === 'UPDATE' && resource === 'subdepartments') {
+
+			if (params.data.pictures && params.data.pictures.length) {
+
+				const { id: subcategoryId } = params.data; // ID DE LA SUBCATEGORÍA
+				
+				const formerPictures = params.data.pictures.filter(p => !(p.rawFile instanceof File));
+
+            	const newPictures = params.data.pictures.filter(p => p.rawFile instanceof File);
+
+				/* PRIMERO QUE NADA HAY QUE IDENTIFICAR LAS IMÁGENES YA EXISTENTES QUE FUERON ELIMINADAS, PARA ELLO
+				HAY QUE HACER UN FETCH AL SERVIDOR PARA DETERMINAR EL ARRAY DE ID DE IMÁGENES INICIAL, Y COMPARARLO CON
+				EL ARRAY ACTUAL */
+
+				options = {
+					method: 'GET',
+					credentials: 'include',
+					mode: 'cors'					
+				};
+
+				url = `${apiURL}categories/sub/${subcategoryId}`;
+
+
+				return fetch(url, options).then(res => res.json()).then(res => {
+
+				
+					const initialIdArray = res.data.subcategory.images;
+					
+					const imagesIdArray = formerPictures.map(item => {
+
+						return item.id;
+	
+					});
+
+					// NECESITAMOS SABER LOS ID DE IMAGENES ELIMINADAS
+
+					const deletedIdArray = initialIdArray.filter(item => {
+
+						return !imagesIdArray.includes(item);
+
+					});
+
+
+					if (deletedIdArray.length > 0) {
+
+						// AHORA ESTOS ID IMAGES HAY QUE MANDARLOS A ELIMINAR AL SERVIDOR
+
+						options = {
+							method: 'DELETE',
+							credentials: 'include',
+							mode: 'cors'					
+						};
+	
+						query = {
+	
+							filter: JSON.stringify({
+								ids: deletedIdArray
+							})
+	
+						};
+	
+						qs = new URLSearchParams(query).toString();
+	
+	
+						url = `${apiURL}categories/sub/${subcategoryId}/images/many?${qs}`;
+	
+						return fetch(url, options).then(resp => resp.json());	
+
+
+					}
+
+					return Promise.resolve();
+
+
+				}).then(res => {
+
+					// UNA VEZ QUE YA ESTÁN ELIMINADAS LAS IMÁGENES, AHORA NOS TOCA ACTUALIZAR LOS DATOS MODIFICADOS EN EL SERVIDOR
+
+					const { code, name, description, category } = params.data;
+
+					const data = {
+
+						filter: {
+							code,
+							name,
+							description,
+							category
+						}
+					};
+
+					options = {
+						method: 'PUT',
+						credentials: 'include',
+						mode: 'cors',
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						body: JSON.stringify(data)					
+					};
+										
+					url = `${apiURL}categories/sub/${subcategoryId}`;
+
+					return fetch(url, options).then(resp => resp.json());
+
+				})
+					.then(res => {
+
+						if (newPictures.length > 0) {
+
+							// AHORA VAMOS A CREAR UN FORM DATA PARA ENVIAR TODAS LAS IMÁGENES NUEVAS AL SERVIDOR
+							const formData = new FormData();
+						
+							for (let i = 0; i < newPictures.length; i++) {
+								formData.append('images', newPictures[i].rawFile); // SOLO ENVIAMOS EL rawFile
+							}
+	
+							options = {
+								method: 'POST',
+								credentials: 'include',
+								mode: 'cors',
+								body: formData					
+							};
+		
+							url = `${apiURL}categories/sub/${subcategoryId}/images/all`;
+	
+							return fetch(url, options).then(resp => resp.json());
+							
+						} 
+
+						return Promise.resolve(res);
+					
+					})
+					.then(json => {
+
+						const subcategoryObj = json.data.subcategory;
+						
+						return Promise.resolve({
+							data: {
+								id: subcategoryObj._id,
+								...subcategoryObj
+							}
+
+						});
+
+
+					});
+
+			}
+
+		}
+
 
 		// for other request types and resources, fall back to the default request handler
 		return requestHandler(type, resource, params);

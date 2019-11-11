@@ -4,11 +4,15 @@ import dataProvider from './modules/myRestProvider';
 import authProvider from './modules/myAuthProvider';
 import addUploadFeature from './modules/uploadFeature';
 import CategoryList from './components/CategoryList';
+import CategoryShow from './components/CategoryShow';
 import CategoryEdit from './components/CategoryEdit';
 import CategoryCreate from './components/CategoryCreate';
 import SubcategoryList from './components/SubcategoryList';
-import CategoryShow from './components/CategoryShow';
+import SubcategoryShow from './components/SubcategoryShow';
+import SubcategoryEdit from './components/SubcategoryEdit';
+
 import Home from './pages/Home/Home';
+
 
 const ModifiedDataProvider = addUploadFeature(dataProvider);
 
@@ -27,8 +31,8 @@ function App() {
 	return (
 		<Admin dashboard={Home} dataProvider={ModifiedDataProvider} authProvider={authProvider}>
 			<Resource name="images" />
-			<Resource name="categories" list={CategoryList} show={CategoryShow} edit={CategoryEdit} create={CategoryCreate} />
-			<Resource name="subcategories" list={SubcategoryList} />
+			<Resource name="departments" list={CategoryList} show={CategoryShow} edit={CategoryEdit} create={CategoryCreate} />
+			<Resource name="subdepartments" list={SubcategoryList} show={SubcategoryShow} edit={SubcategoryEdit} />
 		</Admin>
 	);
 }

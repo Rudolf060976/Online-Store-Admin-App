@@ -6,7 +6,7 @@ const CategoryList = props => (
 		<Datagrid rowClick="show">
 			<TextField source="code" />
 			<TextField source="name" />
-			<ReferenceManyField label="Sub-Departments" reference="subcategories" target="category" sort={{ field: 'name', order: 'ASC' }}>
+			<ReferenceManyField label="SubDepartments" reference="subdepartments" target="category" sort={{ field: 'name', order: 'ASC' }}>
 				<SingleFieldList>
 					<ChipField source="name" />
 				</SingleFieldList>
