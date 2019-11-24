@@ -1,26 +1,26 @@
 import React from 'react';
-import { Edit, SimpleForm, TextInput, ImageField, ImageInput, ReferenceInput, SelectInput } from 'react-admin';
+import { Create, SimpleForm, TextInput, LongTextInput, ImageField, ImageInput, ReferenceInput, SelectInput } from 'react-admin';
 
 const SubcategoryTitle = ({ record }) => {
 
-	return (<span>Editing Sub-Department: { record ? `${record.name}` : '' }</span>);
+	return (<span>Sub-Department: Create New</span>);
 
 };
 
-const SubcategoryEdit = props => (
-	<Edit title={<SubcategoryTitle />} {...props}>
+const SubcategoryCreate = props => (
+	<Create title={<SubcategoryTitle />} {...props}>
 		<SimpleForm>
 			<TextInput source="code" />
 			<TextInput source="name" />			
 			<ReferenceInput label="Department" source="category" reference="departments">
 				<SelectInput optionText="name" />
 			</ReferenceInput>
-			<TextInput source="description" multiline />
+			<LongTextInput source="description" />
 			<ImageInput label="Images" source="pictures" accept="image/*" multiple>
 				<ImageField source="url" />				
 			</ImageInput>
 		</SimpleForm>
-	</Edit>
+	</Create>
 );
 
-export default SubcategoryEdit;
+export default SubcategoryCreate;

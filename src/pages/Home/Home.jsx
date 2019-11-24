@@ -1,10 +1,18 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './Home.scss';
 import Logo from '../../assets/LOGO.png';
 
-const firstName = localStorage.getItem('firstname');
 
 function Home() {
+
+	const [firstName, setFirstName] = useState(null);
+
+	useEffect(() => {
+		
+		setFirstName(localStorage.getItem('firstname'));
+		
+	});
+
 	return (
 		<div id="home-container">
 			<div id="home-header">

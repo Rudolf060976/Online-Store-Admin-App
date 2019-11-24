@@ -1,8 +1,15 @@
 import React from 'react';
 import { Create, SimpleForm, LongTextInput, TextInput, ImageInput, ImageField } from 'react-admin';
 
+
+const CategoryTitle = ({ record }) => {
+
+	return (<span>Department: Create New</span>);
+
+};
+
 const CategoryCreate = props => (
-	<Create {...props}>
+	<Create title={<CategoryTitle />} {...props}>
 		<SimpleForm>
 			<TextInput source="code" />
 			<TextInput source="name" />

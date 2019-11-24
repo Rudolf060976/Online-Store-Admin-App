@@ -1,12 +1,21 @@
 import React from 'react';
-import { List, Datagrid, TextField, ReferenceField } from 'react-admin';
+import { Filter, List, Datagrid, TextField, ReferenceField, ReferenceInput, SelectInput } from 'react-admin';
+
+const SubFilter = props => (
+	<Filter {...props}>
+		<ReferenceInput label="Filter by" source="category" reference="departments" sort={{ field: 'name', order: 'ASC' }} alwaysOn>
+			<SelectInput optionText="name" />
+		</ReferenceInput>
+	</Filter>
+);
+
 
 const SubcategoryList = props => (
-	<List title="Sub-Departments" {...props}>
+	<List title="Sub-Departments" filters={<SubFilter />} {...props}>
 		<Datagrid rowClick="show">
 			<TextField source="code" />
 			<TextField source="name" />         
-			<ReferenceField label="Category" source="category" reference="departments" sortBy="category.name" linkType="show">
+			<ReferenceField label="Department" source="category" reference="departments" sortBy="category.name" linkType="show">
 				<TextField source="name" />
 			</ReferenceField>
 		</Datagrid>

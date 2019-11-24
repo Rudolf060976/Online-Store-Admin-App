@@ -1,9 +1,9 @@
 import React from 'react';
-import { Edit, SimpleForm, LongTextInput, TextInput, ImageField, ImageInput } from 'react-admin';
+import { Edit, SimpleForm, TextInput, ImageField, ImageInput } from 'react-admin';
 
 const CategoryTitle = ({ record }) => {
 
-	return (<span>Department: { record ? `${record.name} - Edit Mode` : '' }</span>);
+	return (<span>Editing Department: { record ? `${record.name}` : '' }</span>);
 
 };
 
@@ -12,7 +12,7 @@ const CategoryEdit = props => (
 		<SimpleForm>
 			<TextInput source="code" />
 			<TextInput source="name" />
-			<LongTextInput source="description" />
+			<TextInput source="description" multiline />
 			<ImageInput source="pictures" label="Images" accept="image/*" multiple>
 				<ImageField source="url" />
 			</ImageInput>

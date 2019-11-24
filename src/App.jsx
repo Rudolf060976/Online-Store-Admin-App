@@ -10,6 +10,13 @@ import CategoryCreate from './components/CategoryCreate';
 import SubcategoryList from './components/SubcategoryList';
 import SubcategoryShow from './components/SubcategoryShow';
 import SubcategoryEdit from './components/SubcategoryEdit';
+import SubcategoryCreate from './components/SubcategoryCreate';
+import ItemsList from './components/ItemsList';
+import ItemCreate from './components/ItemCreate';
+import ItemEdit from './components/ItemEdit';
+import ItemShow from './components/ItemShow';
+import ItemSpecialsList from './components/ItemSpecialsList';
+import ItemSpecialsEdit from './components/ItemSpecialsEdit';
 
 import Home from './pages/Home/Home';
 
@@ -32,7 +39,9 @@ function App() {
 		<Admin dashboard={Home} dataProvider={ModifiedDataProvider} authProvider={authProvider}>
 			<Resource name="images" />
 			<Resource name="departments" list={CategoryList} show={CategoryShow} edit={CategoryEdit} create={CategoryCreate} />
-			<Resource name="subdepartments" list={SubcategoryList} show={SubcategoryShow} edit={SubcategoryEdit} />
+			<Resource name="subdepartments" list={SubcategoryList} show={SubcategoryShow} edit={SubcategoryEdit} create={SubcategoryCreate} />
+			<Resource name="items" list={ItemsList} create={ItemCreate} edit={ItemEdit} show={ItemShow} />
+			<Resource name="item_specials" list={ItemSpecialsList} edit={ItemSpecialsEdit} />
 		</Admin>
 	);
 }

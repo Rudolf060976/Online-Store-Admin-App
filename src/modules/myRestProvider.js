@@ -51,20 +51,37 @@ const convertDataRequestToHTTP = (type, resource, params) => {
 
 			url = `${apiURL}categories/admin?${qs}`;
 
-		} else if (resource === 'subdepartments') {
+		}
+		
+		if (resource === 'subdepartments') {
 
 			url = `${apiURL}categories/sub/admin?${qs}`;
 
-		} else if (resource === 'items') {
+		}
+
+		if (resource === 'item_specials') {
+
+			url = `${apiURL}specials/admin?${qs}`;
+
+		}
+		
+		/* if (resource === 'items') {
 			
 			url = `${apiURL}items/admin?${qs}`;
 
-		}
+		} */
 		break;
 	}
 	case GET_ONE: // *********** GET ONE **************
 	{
 		const { id } = params;
+
+		if (resource === 'item_specials') {
+
+			url = `${apiURL}specials/${id}`;
+
+		} 
+
 
 		// if (resource === 'departments') {
 
@@ -78,11 +95,11 @@ const convertDataRequestToHTTP = (type, resource, params) => {
 
 		// } 
 		
-		if (resource === 'items') {
+		// if (resource === 'items') {
 
-			url = `${apiURL}items/${id}`;
+		// url = `${apiURL}items/${id}`;
 
-		}
+		// }
 
 		break;
 	}
@@ -108,13 +125,13 @@ const convertDataRequestToHTTP = (type, resource, params) => {
 		} 
 		
 		if (resource === 'items') {
-
+			
 			url = `${apiURL}items/many?${qs}`;
-
+			
 		}
 
 		if (resource === 'images') {
-
+			
 			url = `${apiURL}categories/images/many?${qs}`;
 
 		}
@@ -154,11 +171,11 @@ const convertDataRequestToHTTP = (type, resource, params) => {
 
 		} 
 		
-		if (resource === 'items') {
+		/* if (resource === 'items') {
 			
 			url = `${apiURL}items/admin?${qs}`;
 
-		}
+		} */
 		
 
 		break;
@@ -167,6 +184,16 @@ const convertDataRequestToHTTP = (type, resource, params) => {
 	{
 
 		options.method = 'POST';
+
+		if (resource === 'item_specials') {
+
+			url = `${apiURL}specials/`;
+				
+			options.body = JSON.stringify({
+				filter: params.data
+			});
+		} 
+		
 
 		/* if (resource === 'departments') {
 
@@ -200,12 +227,12 @@ const convertDataRequestToHTTP = (type, resource, params) => {
 		
 		} */
 		
-		if (resource === 'items') {
+		/* if (resource === 'items') {
 
 			url = `${apiURL}items/`;
 	
 			options.body = JSON.stringify(params.data);
-		}
+		} */
 
 		break;
 	}
@@ -218,6 +245,12 @@ const convertDataRequestToHTTP = (type, resource, params) => {
 		options.body = {				
 			filter: JSON.stringify(params.data)
 		};
+
+		if (resource === 'item_specials') {
+
+			url = `${apiURL}specials/${id}`;
+		
+		} 
 		
 		/* if (resource === 'departments') {
 
@@ -231,11 +264,11 @@ const convertDataRequestToHTTP = (type, resource, params) => {
 		
 		} */
 		
-		if (resource === 'items') {
+		/* if (resource === 'items') {
 
 			url = `${apiURL}items/${id}`;
 			
-		}
+		} */
 
 		break;
 	}
@@ -274,7 +307,7 @@ const convertHTTPResponse = (response, type, resource, params) => {
 		if (!headers.has('content-range')) {
 			throw new Error('The Content-Range header is missing in the HTTP Response.');
 		}
-
+		
 		return {
 			data: json.data.results.docs.map(record => ({ id: record._id, ...record })),
 			total: parseInt(headers.get('content-range'), 10)
@@ -282,6 +315,16 @@ const convertHTTPResponse = (response, type, resource, params) => {
 	}
 	case GET_ONE:
 	{
+		if (resource === 'items_specials') {
+
+			return {
+				data: {
+					id: json.data.special._id,
+					...json.data.special					
+				}
+			};
+
+		}  
 		/* if (resource === 'departments') {
 
 			return {
@@ -304,7 +347,7 @@ const convertHTTPResponse = (response, type, resource, params) => {
 
 		} */
 		
-		if (resource === 'items') {
+		/* if (resource === 'items') {
 
 			return {
 				data: {
@@ -313,7 +356,7 @@ const convertHTTPResponse = (response, type, resource, params) => {
 				}
 			};
 			
-		}	
+		}	*/
 
 		break;
 	}
@@ -321,9 +364,10 @@ const convertHTTPResponse = (response, type, resource, params) => {
 	{
 		
 		if (resource === 'items' || resource === 'departments' || resource === 'subdepartments') {
-
+			
 			const { results } = json.data;
-
+			
+			
 			const newResults = results.map(item => {
 
 				return {
@@ -332,7 +376,7 @@ const convertHTTPResponse = (response, type, resource, params) => {
 				};
 			});
 	
-	
+			
 			return {
 				data: newResults
 			};
@@ -369,6 +413,17 @@ const convertHTTPResponse = (response, type, resource, params) => {
 	}
 	case UPDATE:
 	{
+		if (resource === 'item_specials') {
+
+			return {
+				data: {
+					id: json.data.special._id,
+					...json.data.special
+				}
+			};
+
+		}
+
 		/* if (resource === 'departments') {
 
 			return {
@@ -391,7 +446,7 @@ const convertHTTPResponse = (response, type, resource, params) => {
 
 		} */
 
-		if (resource === 'items') {
+		/* if (resource === 'items') {
 
 			return {
 				data: {
@@ -400,7 +455,7 @@ const convertHTTPResponse = (response, type, resource, params) => {
 				}
 			};
 
-		}
+		}  */
 		break;
 	}
 
