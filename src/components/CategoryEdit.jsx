@@ -10,7 +10,7 @@ const CategoryTitle = ({ record }) => {
 const CategoryEdit = props => (
 	<Edit title={<CategoryTitle />} {...props}>
 		<SimpleForm>
-			<TextInput source="code" />
+			<TextInput disabled source="code" />
 			<TextInput source="name" />
 			<TextInput source="description" multiline />
 			<ImageInput source="pictures" label="Images" accept="image/*" multiple>

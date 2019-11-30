@@ -41,7 +41,7 @@ const conditionChoices = [
 const ItemEdit = props => (
 	<Edit title={<ItemTitle />} {...props}>
 		<SimpleForm>
-			<TextInput source="code" />
+			<TextInput disabled source="code" />
 			<TextInput source="name" />		
 			<ReferenceInput label="Sub-Department" source="subcategory" reference="subdepartments" sort={{ field: 'name', order: 'ASC'}}>
 				<SelectInput optionText="name" />

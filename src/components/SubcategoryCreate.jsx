@@ -10,7 +10,7 @@ const SubcategoryTitle = ({ record }) => {
 const SubcategoryCreate = props => (
 	<Create title={<SubcategoryTitle />} {...props}>
 		<SimpleForm>
-			<TextInput source="code" />
+			<TextInput disabled source="code" />
 			<TextInput source="name" />			
 			<ReferenceInput label="Department" source="category" reference="departments">
 				<SelectInput optionText="name" />

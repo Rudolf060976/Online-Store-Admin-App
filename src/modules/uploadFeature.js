@@ -1092,7 +1092,8 @@ const addUploadFeature = requestHandler => {
 					...itemObj,
 					price: price2
 				};
-											
+					console.log('ESTOY AQUÍ!!!!!');
+					console.log('DATA :', data);						
 				return Promise.resolve({ 
 					data
 				});

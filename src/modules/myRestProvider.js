@@ -136,6 +136,12 @@ const convertDataRequestToHTTP = (type, resource, params) => {
 
 		}
 
+		if (resource === 'item_specials') {
+			
+			url = `${apiURL}specials/admin?${qs}`;
+
+		}
+
 
 		break;
 	}
@@ -242,10 +248,12 @@ const convertDataRequestToHTTP = (type, resource, params) => {
 
 		options.method = 'PUT';
 
-		options.body = {				
-			filter: JSON.stringify(params.data)
+		const query = {				
+			filter: params.data
 		};
-
+		
+		options.body = JSON.stringify(query);
+		
 		if (resource === 'item_specials') {
 
 			url = `${apiURL}specials/${id}`;
@@ -315,7 +323,7 @@ const convertHTTPResponse = (response, type, resource, params) => {
 	}
 	case GET_ONE:
 	{
-		if (resource === 'items_specials') {
+		if (resource === 'item_specials') {
 
 			return {
 				data: {
