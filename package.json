@@ -55,7 +55,7 @@
     "node-sass": "^4.12.0",
     "ra-core": "^2.9.8",
     "react": "^16.10.2",
-    "react-admin": "^2.9.8",
+    "react-admin": "^4.7.0",
     "react-dom": "^16.10.2",
     "regenerator-runtime": "^0.13.3"
   },
